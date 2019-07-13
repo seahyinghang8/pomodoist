@@ -17,7 +17,10 @@ class App extends React.Component {
     this.toggleItemIsCompleted = this.toggleItemIsCompleted.bind(this);
 
     this.state = {
-      // TODO 1
+      items: [],
+      nextItemId: 0,
+      sessionIsRunning: false,
+      itemIdRunning: null
     };
   }
 
