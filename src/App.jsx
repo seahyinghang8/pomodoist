@@ -27,10 +27,14 @@ class App extends React.Component {
   addItem(description) {
     const { nextItemId } = this.state;
     const newItem = {
-      // TODO 2: initialize new item object
+      id: nextItemId,
+      description: description,
+      sessionCompleted: 0,
+      isCompleted: false
     };
     this.setState((prevState => ({
-      // TODO 2: append new items to list and increase nextItemId by 1
+      nextItemId: prevState.nextItemId + 1,
+      items: [...prevState, newItem]
     })));
   }
 
