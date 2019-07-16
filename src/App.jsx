@@ -32,10 +32,10 @@ class App extends React.Component {
       sessionCompleted: 0,
       isCompleted: false
     };
-    this.setState((prevState => ({
+    this.setState(prevState => ({
       nextItemId: prevState.nextItemId + 1,
-      items: [...prevState, newItem]
-    })));
+      items: [...prevState.items, newItem]
+    }));
   }
 
   clearCompletedItems() {
@@ -75,7 +75,12 @@ class App extends React.Component {
               autoPlays
             /> */}
             <div className="items-container">
-            {/* TODO 3:  display todo items */}
+            {this.state.items.map(item => (
+              <TodoItem
+                key={item.id}
+                {...item}
+              />
+            ))}
             </div>
         </div>
         <footer>
