@@ -20,7 +20,8 @@ class App extends React.Component {
       items: [],
       nextItemId: 0,
       sessionIsRunning: false,
-      itemIdRunning: null
+      itemIdRunning: null,
+      areItemsMarkedAsCompleted: false
     };
   }
 
@@ -29,7 +30,7 @@ class App extends React.Component {
     const newItem = {
       id: nextItemId,
       description: description,
-      sessionCompleted: 0,
+      sessionsCompleted: 0,
       isCompleted: false
     };
     this.setState(prevState => ({
@@ -39,19 +40,43 @@ class App extends React.Component {
   }
 
   clearCompletedItems() {
-    // TODO 6
+    this.setState(({ items }) => ({
+      items: items.filter(item => !item.isCompleted),
+      areItemsMarkedAsCompleted: false
+    }));
   }
 
   increaseSessionsCompleted(itemId) {
-    // TODO 5
+    this.setState(({ items }) => ({
+      items: items.map(item => {
+        if (itemId === item.id) item.sessionsCompleted++;
+        return item;
+      })
+    }));
   }
 
   toggleItemIsCompleted(itemId) {
-    // TODO 6
+    // Sets the given item to be completed
+    this.setState(({ items }) => ({
+      items: items.map(item => {
+        if (itemId === item.id) item.isCompleted = !item.isCompleted;
+        return item;
+      })
+    }));
+
+    // Sees if any of the items are marked as completed
+    this.setState(({ items }) => ({
+      areItemsMarkedAsCompleted: items.reduce((acc, curr) => (
+        acc || curr.isCompleted
+      ), false)
+    }));
   }
 
   startSession(id) {
-    // TODO 4
+    this.setState({
+      sessionIsRunning: true,
+      itemIdRunning: id
+    });
   }
 
   render() {
@@ -66,18 +91,20 @@ class App extends React.Component {
         <div className="container">
           <header>
             <h1 className="heading">Today</h1>
-            <ClearButton onClick={this.clearCompletedItems} />
+            {areItemsMarkedAsCompleted && <ClearButton onClick={this.clearCompletedItems} />}
           </header>
-          {/* TODO 4 */}
-            {/* <Timer
+            {this.state.sessionIsRunning && <Timer
+              key={this.state.itemIdRunning}
               mode="WORK"
-              onSessionComplete={() => { console.log("complete") }}
+              onSessionComplete={() => this.increaseSessionsCompleted(this.state.itemIdRunning)}
               autoPlays
-            /> */}
+            /> }
             <div className="items-container">
             {this.state.items.map(item => (
               <TodoItem
                 key={item.id}
+                toggleIsCompleted={() => this.toggleItemIsCompleted(item.id)}
+                startSession={() => this.startSession(item.id)}
                 {...item}
               />
             ))}
